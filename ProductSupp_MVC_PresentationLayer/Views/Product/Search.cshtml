@@ -1,0 +1,142 @@
+﻿@model ProductSupp_MVC_PresentationLayer.ViewModels.Products_List_ViewModel
+
+@{
+    ViewBag.Title = "Search In Produts";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<br />
+
+<div class="row">
+
+    <b>Search By:</b>
+    @Html.RadioButton("searchBy", "Product Name", true, new { @class = "check_box", id = "searchBy" }) Product Name
+    @Html.RadioButton("searchBy", "Supplier Name", new { @class = "check_box", id = "searchBy" }) Supplier Name
+</div>
+
+<br />
+
+<div class="row">
+    <div class="col-sm-2">
+        @Html.TextBox("SearchTerm", "", new { @class = "form-control", id = "search_txt" })
+    </div>
+    <div class="col-sm-4">
+        <input type="submit" id="search_btn" value="Search" onclick="search()" class="btn btn-success" />
+    </div>
+
+    <div class="col-sm-2">
+        <input type="submit" id="clear_btn" value="Clear" class="btn btn-primary" />
+    </div>
+
+</div>
+
+<br />
+
+<table class="table table-hover table-bordered table-responsive">
+    <thead>
+        <tr>
+            <th>Prouct Name</th>
+            <th>Product Quantity</th>
+            <th>Reorder Level</th>
+            <th>Supplier Name</th>
+            <th>Unit Price</th>
+            <th>Units in Stock</th>
+            <th>Units in Order</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+
+
+
+
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        //load all products
+        LoadAllProducts();
+
+
+        $('#clear_btn').on("click", function (event) {
+            $('#search_txt').val("");
+            LoadAllProducts();
+        })
+
+    });
+
+
+    function LoadAllProducts()
+    {
+        $.getJSON("/Product/LoadProducts", {}, function (data) {
+            if (data != null) {
+                debugger;
+                var html = "";
+                $.each(data, function (key, value) {
+                    html += "<tr class='main-data tr_" + value.Product.ID + "' data-id='" + value.Product.ID + "' >"
+                    html += "<td>" + value.Product.ProductName + " </td>"
+                    html += "<td>" + value.Product.QuantityPerUnit + " </td>"
+                    html += "<td>" + value.Product.ReorderLevel + " </td>"
+                    html += "<td>" + value.Supplier.SupplierName + " </td>"
+                    html += "<td>" + value.Product.UnitPrice + " </td>"
+                    html += "<td>" + value.Product.UnitsInStock + " </td>"
+                    html += "<td>" + value.Product.UnitsOnOrder + " </td>"
+
+                    //html += "<td> <a class='btn btn-primary' onclick='DisplayEditDatainForm(this)' >Edit</a> | <a class='btn btn-danger' onclick='DeleteSupplier(this)' >Delete</a> </td>"
+                   
+                    html += "</tr>";
+                });
+
+                $(".table").find("tbody").html(html);
+            }
+        });
+    }
+
+    function clear() {
+        debugger;
+        $('#search_txt').val("");
+        LoadAllProducts();
+    }
+
+    function search() {
+        var checkbox = $('#searchBy:checked').val();
+        var search_term = $('#search_txt').val();
+
+        //alert(checkbox + " " + search_term);
+
+        $.getJSON("/Product/Search_product", { searchBy: checkbox, searchTerm: search_term }, function (data) {
+            if (data != null)
+            {
+                debugger;
+                var html = "";
+
+                if (data.length != 0)
+                {
+                    $.each(data, function (key, value) {
+                        html += "<tr class='main-data tr_" + value.Product.ID + "' data-id='" + value.Product.ID + "' >"
+                        html += "<td>" + value.Product.ProductName + " </td>"
+                        html += "<td>" + value.Product.QuantityPerUnit + " </td>"
+                        html += "<td>" + value.Product.ReorderLevel + " </td>"
+                        html += "<td>" + value.Supplier.SupplierName + " </td>"
+                        html += "<td>" + value.Product.UnitPrice + " </td>"
+                        html += "<td>" + value.Product.UnitsInStock + " </td>"
+                        html += "<td>" + value.Product.UnitsOnOrder + " </td>"
+
+                        html += "</tr>";
+                    });
+                }
+                else
+                {
+                    html += "<tr> <td colspan='8' class='text-danger'> There is no such product </td> </tr>"
+                }
+
+                $(".table").find("tbody").html(html);
+            }
+        });
+    }
+</script>
+

@@ -1,0 +1,43 @@
+﻿@model ProductSupp_MVC_PresentationLayer.ViewModels.Suppliers_Product
+
+@{
+    ViewBag.Title = "Edit Product";
+}
+
+
+@if (Model.Product != null)
+{
+    <h2>@ViewBag.Title  @Model.Product.ProductName</h2>
+
+    <br />
+
+    using (Html.BeginForm("Edit", "Product"))
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.Partial("UserControl/ProductControl", Model)
+
+        <div class="form-group">
+            <div class="col-md-4"></div>
+            <input type="submit" class="btn btn-success" id="btn_save" value="Save" />
+        </div>
+    }
+
+}
+else
+{
+    <h2 class="text-danger">There is No such Product in Database</h2>
+
+    <div class="row">
+        <div class="col-md-4">
+            @Html.ActionLink("Add New Product", "AddProduct", "", new { @class = "btn btn-primary" })
+        </div>
+        <div class="col-md-4">
+            @Html.ActionLink("Products List", "Index", "", new { @class = "btn btn-info" })
+        </div>
+    </div>
+}
+
+
+
+

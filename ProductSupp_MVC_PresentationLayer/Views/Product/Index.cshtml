@@ -1,0 +1,87 @@
+﻿@model IEnumerable<ProductSupp_MVC_PresentationLayer.ViewModels.Products_List_ViewModel>
+
+@{
+    ViewBag.Title = "Product List";
+    
+}
+
+
+
+<h2>@ViewBag.Title</h2>
+
+<br />
+
+<table class="table table-hover table-bordered table-responsive">
+    <thead>
+        <tr>
+            <th>Prouct Name</th>
+            <th>Product Quantity</th>
+            <th>Reorder Level</th>
+            <th>Supplier Name</th>
+            <th>Unit Price</th>
+            <th>Units in Stock</th>
+            <th>Units in Order</th>
+            <th>Edit / Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var entity in Model)
+        {
+            <tr class="main-data tr_" + @entity.Product.ID>
+                <td>@Html.DisplayFor(model => entity.Product.ProductName)</td>
+                <td>@Html.DisplayFor(model => entity.Product.QuantityPerUnit)</td>
+                <td>@Html.DisplayFor(model => entity.Product.ReorderLevel)</td>
+                <td>@Html.DisplayFor(model => entity.Supplier.SupplierName)</td>
+                <td>@Html.DisplayFor(model => entity.Product.UnitPrice)</td>
+                <td>@Html.DisplayFor(model => entity.Product.UnitsInStock)</td>
+                <td>@Html.DisplayFor(model => entity.Product.UnitsOnOrder)</td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { productID = entity.Product.ID } , new { @class = "btn btn-success"}) |
+                    @*@Html.ActionLink("Delete", "#", new { productID = entity.Product.ID } , new { @class = "btn btn-danger" , id="delete_btn"})*@
+                    @*<input type="submit" class="btn btn-danger" id="delete_btn" data-bind="@entity.Product.ID" value="Delete"/>*@
+                    <a class="btn btn-danger" id="delete_btn" data-html="@entity.Product.ID" data-bind="@entity.Product.ID" onclick="onClickDelete(this)" >Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="row">
+    <div class="col-md-4">
+        @Html.ActionLink("Add New Product" , "AddProduct" , "" , new { @class="btn btn-primary"})
+    </div>
+    <div class="col-md-4">
+        @Html.ActionLink("Search in Products", "Search", "", new { @class = "btn btn-info" })
+    </div>
+</div>
+
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script type="text/javascript">
+    
+    function onClickDelete(obj) {
+        debugger;
+        var productId = $(obj).attr("data-bind");
+        var _this = $(obj).closest(".main-data");
+        if (productId != null || productId != 0)
+        {
+            if(confirm('Are You Sure You Want to delete this Product ??...'))
+            {
+                $.getJSON("/Product/Delete", { productID: productId }, function (data) {
+                    if (data == "deleted_Ok") {
+                        //product deleted
+                        _this.fadeOut('slow');
+                        alert('Deleted Successfully...');
+                    }
+                    else
+                    {
+                        //not deleted
+                        alert("This Product not deleted try again !!...");
+                    }
+                });
+            }
+            
+        }
+    }
+</script>
+

@@ -1,0 +1,52 @@
+﻿@*@model ProductSupp_Models.ProductEntity*@
+
+@model ProductSupp_MVC_PresentationLayer.ViewModels.Suppliers_Product
+
+<div class="form-horizontal">
+    <div class="form-group">
+        @Html.LabelFor(model => model.Product.ProductName , "Product Name" , htmlAttributes: new { @class= "control-label col-md-4" })
+        @Html.TextBoxFor(model => model.Product.ProductName , new {@class = "form-control col-md-6" , id="productname" })
+        @Html.ValidationMessageFor(model => model.Product.ProductName , "" , new { @class ="text-danger"})
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Product.QuantityPerUnit, "Quantity Per Unit", htmlAttributes: new { @class = "control-label col-md-4" })
+        @Html.TextBoxFor(model => model.Product.QuantityPerUnit, new { @class = "form-control col-md-6", id = "quantity_per_unit" })
+        @Html.ValidationMessageFor(model => model.Product.QuantityPerUnit, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Product.ReorderLevel , "Reorder Level" , htmlAttributes: new { @class= "control-label col-md-4" })
+        @Html.TextBoxFor(model => model.Product.ReorderLevel , new {@class= "form-control col-md-6" , id = "reorder_level" })
+        @Html.ValidationMessageFor(model => model.Product.ReorderLevel , "" , new {@class= "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Suppliers , "Suppliers" , htmlAttributes: new { @class = "control-label col-md-4" })
+        @Html.DropDownListFor(model => model.Product.SupplierID , new SelectList(Model.Suppliers , "ID" , "SupplierName") , "-- Select Supplier --" , new {@class="form-control col-md-6" , id="supplier-list" })
+        @Html.ValidationMessageFor(model => model.Product.SupplierID , "" , new { @class="text-danger" } )
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Product.UnitPrice , "Unit Price" , htmlAttributes: new { @class= "control-label col-md-4"})
+        @Html.TextBoxFor(model => model.Product.UnitPrice , new { @class = "form-control col-md-6" , id="unit_price"})
+        @Html.ValidationMessageFor(model => model.Product.UnitPrice , "" , new { @class="text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Product.UnitsInStock , "Unit In Stock" , htmlAttributes: new { @class= "control-label col-md-4" })
+        @Html.TextBoxFor(model => model.Product.UnitsInStock , new { @class= "form-control col-md-6", id = "unit_stock" })
+        @Html.ValidationMessageFor(model => model.Product.UnitsInStock , "" , new {@class = "text-danger"})
+    </div>
+
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Product.UnitsOnOrder, "Unit In Order", htmlAttributes: new { @class = "control-label col-md-4" })
+        @Html.TextBoxFor(model => model.Product.UnitsOnOrder, new { @class = "form-control col-md-6", id = "unit_order" })
+        @Html.ValidationMessageFor(model => model.Product.UnitsOnOrder, "", new { @class = "text-danger" })
+    </div>
+
+
+    @Html.HiddenFor(model => model.Product.ID , new { @Value = Model.Product == null ? 0 : Model.Product.ID , id = "product_Id" })   @*, new { @Value = Model.ID }*@
+
+</div>

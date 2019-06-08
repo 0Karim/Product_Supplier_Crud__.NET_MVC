@@ -1,0 +1,110 @@
+﻿@model ProductSupp_Models.SupplierEntity
+
+@{
+    ViewBag.Title = "Add / Edit Supplier";
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+@using (Html.BeginForm("Add_Edit_Supplier", "Supplier"))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <div class="form-group">
+            @Html.LabelFor(model => model.SupplierName, "Supplier Name", htmlAttributes: new { @class = "control-label col-sm-4" })
+            @Html.TextBoxFor(model => model.SupplierName, new { @class = "form-control col-sm-6", id = "suppliername" })
+            @Html.ValidationMessageFor(model => model.SupplierName, "", new { @class = "text-danger" })
+        </div>
+
+        @Html.HiddenFor(model => model.ID, new { @Value = Model == null ? 0 : Model.ID, id = "supply_Id" })   @*, new { @Value = Model.ID }*@
+
+
+
+        <div class="form-group">
+            <div class="col-sm-4"></div>
+            <input type="submit" class="btn btn-success col-sm-6" value="save" />
+        </div>
+
+
+    </div>
+}
+
+
+<br />
+
+<h2>Suppliers table</h2>
+<table class="table table-hover table-bordered table-responsive">
+    <thead>
+        <tr>
+            <th>Supplier ID</th>
+            <th>Supplier Name</th>
+            <th>Edit / Delete</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //bind table with suppliers data
+        LoadSuppliers();
+    });
+
+    //function that load all suppliers
+    function LoadSuppliers() {
+        $.getJSON("/Supplier/LoadSuppliers", {}, function (data) {
+            if (data != null) {
+                debugger;
+                var html = "";
+                $.each(data, function (key, value) {
+                    html += "<tr class='main-data tr_" + value.ID + "' data-id='" + value.ID + "' >"
+                    html += "<td>" + value.ID + " </td>"
+                    html += "<td>" + value.SupplierName + " </td>"
+                    html += "<td> <a class='btn btn-primary' onclick='DisplayEditDatainForm(this)' >Edit</a> | <a class='btn btn-danger' onclick='DeleteSupplier(this)' >Delete</a> </td>"
+                    html += "</tr>";
+                });
+
+                $(".table").find("tbody").html(html);
+            }
+        });
+    }
+
+    //show data to edit
+    function DisplayEditDatainForm(obj) {
+        debugger;
+        var _this = $(obj).closest(".main-data");
+        $("#suppliername").val(_this.find("td").eq(1).html());
+        $("#supply_Id").val(_this.attr("data-id"));
+
+        ////change Add Button
+        $(".btn-success").val("Edit");
+    }
+
+    //Delete Supplier Data
+    function DeleteSupplier(obj)
+    {
+        if (confirm('Are You Want to Delete this Supplier ? ... '))
+        {
+            var _this = $(obj).closest(".main-data");
+            $.getJSON("/Supplier/Delete", { supplierID: _this.attr("data-id") }, function (data) {
+                if (data == "deleted_Ok") { //supplier deleted
+                    _this.fadeOut('slow');
+                    alert('Deleted Successfully...');
+                }
+                else { //not deleted
+                    alert("This Supplier not deleted because there is dependent product on this supplier !! Delete it's product first");
+                }
+            })
+        }
+    }
+</script>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
